@@ -9,7 +9,7 @@ public class TestClass {
             System.out.println("Is Leap Year: " + date.isLeapYear());
             System.out.println("Days in Month: " + date.getDaysInMonth());
             System.out.println("UNIX Timestamp: " + date.getMilliTimestamp());
-
+            System.out.println("UTC-4 time: " + date.localDate(-4));
             System.out.println("Date object: " + date);
         }
     }
