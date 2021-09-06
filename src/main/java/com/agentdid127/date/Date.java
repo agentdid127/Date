@@ -1,5 +1,8 @@
 package com.agentdid127.date;
 
+/**
+ * Custom date System, to avoid 2038 issues
+ */
 public class Date {
 
      //Instance Variables
