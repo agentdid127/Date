@@ -1,4 +1,6 @@
-package com.agentdid127.date;
+package com.agentdid127.date.unix;
+
+import com.agentdid127.date.Date;
 
 /**
  * Class to handle typical Unix format.
@@ -22,7 +24,7 @@ public class UnixTimestamp {
      * Gets Date from Unix timestamp
      * @return
      */
-    public Date toDate() {
+    public UnixSupportedDate toDate() {
         long milli;
         if (format.equals(UnixFormat.SECONDS)) {
             milli = data * 1000;
@@ -111,7 +113,7 @@ public class UnixTimestamp {
             if (year % 4 != 1 && year < 1970) day++;
             //if (year < 1970) second--;
             if (year <= 0) year--;
-            return Date.reformatDate(new Date(year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)milli));
+            return new UnixSupportedDate(Date.reformatDate(new Date(year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)milli)));
 
     }
 

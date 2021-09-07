@@ -1,4 +1,4 @@
-package com.agentdid127.date;
+package com.agentdid127.date.unix;
 
 public enum UnixFormat {
     SECONDS,

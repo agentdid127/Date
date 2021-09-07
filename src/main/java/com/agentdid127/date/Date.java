@@ -6,7 +6,7 @@ package com.agentdid127.date;
 public class Date {
 
     //Instance Variables
-    private int year, month, day, hour, minute, second, milli;
+    protected int year, month, day, hour, minute, second, milli;
 
 
     /**
@@ -74,14 +74,6 @@ public class Date {
         return getDaysInMonth(month, year);
     }
 
-    public UnixTimestamp getUnixSeconds() {
-        return new UnixTimestamp(getUnixMilli().getData()/1000, UnixFormat.SECONDS);
-    }
-
-    public UnixTimestamp getUnixMilli() {
-        return UnixTimestamp.fromDate(this);
-    }
-
 
     /**
      * Adds the two dates
@@ -124,7 +116,7 @@ public class Date {
         int hour = (int)(offset);
         int minute = (int)((offset-hour) * (60));
 
-        return reformatDate(sum(new Date(0, 0, 0, hour, minute, 0, 0)));
+        return formattedSum(new Date(0, 0, 0, hour, minute, 0, 0));
         }
 
 
@@ -151,14 +143,6 @@ public class Date {
             }
         }
         return inS.toString();
-    }
-
-    /**
-     * Returns an example String date, to show off how it could work.
-     * @return String example date.
-     */
-    public static String getExample() {
-        return "2021:09:06:12:23:12:236";
     }
 
     public int getYear() {

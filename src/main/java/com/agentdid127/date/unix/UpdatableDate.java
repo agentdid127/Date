@@ -1,4 +1,7 @@
-package com.agentdid127.date;
+package com.agentdid127.date.unix;
+
+import com.agentdid127.date.Date;
+import com.agentdid127.date.unix.UnixTimestamp;
 
 public class UpdatableDate {
 
