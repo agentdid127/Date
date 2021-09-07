@@ -103,6 +103,7 @@ public class Date {
         //Days
         long dayN = this.day;
         dayN--;
+        if (isLeapYear()) dayN--;
         dayN *= (1000 * 60 * 60 * 24);
 
         //Months

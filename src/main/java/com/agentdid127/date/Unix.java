@@ -26,62 +26,90 @@ public class Unix {
         long milli;
         if (format.equals(UnixFormat.SECONDS)) {
             milli = data * 1000;
-        }
-        else if (format.equals(UnixFormat.MILLISECONDS)) {
+        } else if (format.equals(UnixFormat.MILLISECONDS)) {
             milli = data;
+        } else return null;
+        long second = 0;
+        if (milli >= 1000 || milli < 0) {
+            while (milli >= 1000) {
+                milli -= 1000;
+                second++;
+            }
+            while (milli < 0) {
+                milli += 1000;
+                second--;
+            }
         }
-        else return null;
-        long day = (milli / (86400 * 1000));
-        double month = (day / 30.44) + 1;
+        long minute = 0;
+        if (second >= 60 || second < 0) {
+            while (second >= 60) {
+                second -= 60;
+                minute++;
+            }
+            while (second < 0) {
+                second += 60;
+                minute--;
+            }
+        }
+        long hour = 0;
+        if (minute >= 60 || minute < 0) {
+            while (minute >= 60) {
+                minute -= 60;
+                hour++;
+            }
+            while (minute < 0) {
+                minute +=60;
+                hour--;
+            }
+        }
+        long day = 0;
+        if (hour >= 24 || hour < 0) {
+            while (hour > 24) {
+                hour -= 24;
+                day++;
+            }
+            while (hour < 0) {
+                hour += 24;
+                day--;
+            }
+        }
+        long month = 0;
+        int yCycle = 1;
+        int mCycle = 1;
+            while (day > Util.getDaysInMonth(mCycle, yCycle)) {
+                day -= Util.getDaysInMonth(mCycle, yCycle);
+                mCycle++;
+                month++;
+                if (mCycle > 12) {
+                    yCycle++;
+                    mCycle = 1;
+                }
+                if (yCycle > 4) yCycle = 1;
+            }
+            while (day < 0) {
+                day += Util.getDaysInMonth(mCycle, yCycle);
+                mCycle--;
+                month--;
+                if (mCycle < 1) {
+                    yCycle--;
+                    mCycle = 12;
+                }
+                if (yCycle < 1) yCycle = 4;
+            }
+            month++;
+            int year = 1970;
+            while (month > 12) {
+                month -= 12;
+                year++;
+            }
+            while (month < 0) {
+                month += 12;
+                year--;
+            }
 
-        int year = 0;
-        while (month > 12) {
-            month-= 12;
-            year += 1;
-        }
-        int yearTemp = year;
-        double dayTemp = day;
-        while (dayTemp > 365.24 && yearTemp > 0) {
-            dayTemp -= 365.24;
-            yearTemp--;
-        }
-        day = (int)dayTemp;
-        int monthTemp = (int) month;
-        while (day > Util.getDaysInMonth(monthTemp, (int) year) && monthTemp > 0) {
-            day -= Util.getDaysInMonth(monthTemp, (int) year);
-            monthTemp--;
-        }
-        while (day > Util.getDaysInMonth((int)month, year)) {
-            day -= Util.getDaysInMonth((int)month, year);
-            month +=1;
-        }
-        while (month > 12) {
-            month-= 12;
-            year += 1;
-        }
-
-        long hour = milli / (1000 * 60 * 60);
-
-        while (hour > 24) {
-            hour -= 24;
-        }
-        long minute = milli / (1000 * 60) ;
-
-        while (minute > 60) {
-            minute -= 60;
-        }
-        long second = milli / (1000);
-        while (second > 60) {
-            second -= 60;
-        }
-        while (milli >= 1000) {
-            milli -= 1000;
-        }
-        while (milli < 0) {
-            milli += 1000;
-        }
-
-        return new Date(year + 1970, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)milli);
+            if (year % 4 != 0) day++;
+            if (year < 1970) second--;
+            return new Date(year, (int)month, (int)day, (int)hour, (int)minute, (int)second, (int)milli);
 
     }
 
@@ -95,5 +123,15 @@ public class Unix {
 
     public String toString() {
         return String.valueOf(data);
+    }
+
+    public java.util.Date toJavaDate() {
+        long datan = data;
+        java.util.Date date = new java.util.Date();
+        if (format.equals(UnixFormat.SECONDS)) {
+            data *= 1000;
+        }
+        date.setTime(data);
+        return date;
     }
 }
