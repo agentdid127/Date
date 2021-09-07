@@ -15,9 +15,13 @@ public class TestClass {
 
             System.out.println("Is Leap Year: " + date.isLeapYear());
             System.out.println("Days in Month: " + date.getDaysInMonth());
-            System.out.println("UNIX Timestamp: " + date.getMilliTimestamp());
+            System.out.println("UNIX Timestamp: " + date.getUnixSeconds());
+            System.out.println("UNIX Timestamp (Milli): " + date.getUnixMilli());
             System.out.println("UTC-4 time: " + date.localDate(-4));
             System.out.println("Date object: " + date);
+
+            System.out.println("Testing Milliseconds:" + new Unix(date.getUnixMilli().getData(), UnixFormat.MILLISECONDS).toDate());
+            System.out.println("Testing Seconds:" + new Unix(date.getUnixSeconds().getData(), UnixFormat.SECONDS).toDate());
         }
     }
 }
