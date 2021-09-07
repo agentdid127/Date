@@ -6,7 +6,7 @@ package com.agentdid127.date;
 public class Date {
 
     //Instance Variables
-    private final int year, month, day, hour, minute, second, milli;
+    private int year, month, day, hour, minute, second, milli;
 
 
     /**
@@ -130,7 +130,7 @@ public class Date {
      * @return Date object of added date
      */
     public Date sum(Date date) {
-        return new Date(year + date.year, month + date.month, day + date.day,hour + date.hour, minute + date.minute, second + date.second, milli + date.milli);
+        return reformatDate(new Date(year + date.year, month + date.month, day + date.day,hour + date.hour, minute + date.minute, second + date.second, milli + date.milli));
     }
 
     /**
@@ -139,7 +139,82 @@ public class Date {
      * @return Date object of subtracted date
      */
     public Date diff(Date date) {
-        return new Date(year - date.year, month - date.month, day - date.day,hour - date.hour, minute - date.minute, second - date.second, milli - date.milli);
+        return reformatDate(new Date(year - date.year, month - date.month, day - date.day,hour - date.hour, minute - date.minute, second - date.second, milli - date.milli));
+    }
+
+    public static Date reformatDate(Date date) {
+        int year = date.year, month = date.month, day = date.day, hour = date.hour, minute = date.minute, second = date.second, milli = date.milli;
+
+        while (milli >= 1000) {
+            milli -= 1000;
+            second++;
+        }
+        while (milli < 0) {
+            milli += 1000;
+            second--;
+        }
+        while (second >= 60) {
+            second -= 60;
+            minute++;
+        }
+        while (second < 0) {
+            second += 60;
+            minute--;
+        }
+
+        while (minute >= 60) {
+            minute -= 60;
+            hour++;
+        }
+        while (minute < 0) {
+            minute += 60;
+            hour--;
+        }
+
+        while (hour >= 24) {
+            hour -= 24;
+            day++;
+        }
+        while (hour < 0) {
+            hour += 24;
+            day--;
+        }
+
+        int tempM = month;
+        int tempY = year % 4 + 1;
+
+        while (day > Util.getDaysInMonth(tempM, tempY)) {
+            day -= Util.getDaysInMonth(tempM, tempY);
+            tempM++;
+            month++;
+            if (tempM > 12) {
+                tempY++;
+                tempM = 1;
+            }
+            if (tempY > 4) tempY = 1;
+        }
+        while (day < 0) {
+            day += Util.getDaysInMonth(tempM, tempY);
+            tempM--;
+            month--;
+            if (tempM < 1) {
+                tempM = 12;
+                tempY--;
+            }
+            if (tempY < 1) tempY = 4;
+        }
+
+        while (month > 12) {
+            month -= 12;
+            year++;
+        }
+        while (month < 0) {
+            month += 12;
+            year--;
+        }
+
+        return new Date(year, month, day, hour, minute, second, milli);
+
     }
 
     /**
