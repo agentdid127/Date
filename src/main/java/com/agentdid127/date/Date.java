@@ -62,7 +62,7 @@ public class Date {
      * @return boolean variable of a leap year
      */
     public boolean isLeapYear() {
-        return Util.isLeapYear(year);
+        return isLeapYear(year);
     }
 
 
@@ -71,57 +71,16 @@ public class Date {
      * @return number of days in current month
      */
     public int getDaysInMonth() {
-        return Util.getDaysInMonth(month, year);
+        return getDaysInMonth(month, year);
     }
 
-
-
-    public Unix getUnixSeconds() {
-        return new Unix(getMilliTimestamp()/1000, UnixFormat.SECONDS);
+    public UnixTimestamp getUnixSeconds() {
+        return new UnixTimestamp(getUnixMilli().getData()/1000, UnixFormat.SECONDS);
     }
 
-    public Unix getUnixMilli() {
-        return new Unix(getMilliTimestamp(), UnixFormat.MILLISECONDS);
+    public UnixTimestamp getUnixMilli() {
+        return UnixTimestamp.fromDate(this);
     }
-    /**
-     * Gets the current timestamp using the UNIX date format.
-     * @return timestamp in UNIX format.
-     */
-    private long getMilliTimestamp() {
-        //Get some useful information
-        int yearTemp = year;
-        long leapYearTemp = (int)Math.floor(1970 / 4.0);
-        long normalYearTemp = 1970 - leapYearTemp;
-        long leapYears = (long)Math.floor(yearTemp / 4.0);
-        long normalYears = (yearTemp - leapYears);
-
-        //Seconds through hours
-        long secondN = this.second  * 1000L;
-        long minuteN = this.minute * (1000 * 60);
-        long hourN = this.hour * (1000 * 60 * 60);
-
-        //Days
-        long dayN = this.day;
-        dayN--;
-        if (isLeapYear()) dayN--;
-        dayN *= (1000 * 60 * 60 * 24);
-
-        //Months
-        long monthN = 0;
-        for (int i = 1; i < month; i++) monthN += Util.getDaysInMonth(i, year);
-        monthN *= (1000 * 60 * 60 * 24);
-
-        //Years
-        leapYears -= leapYearTemp;
-        normalYears -= normalYearTemp;
-        normalYears *= (1000 * 60 * 60 * 24) * 365L;
-        leapYears  = leapYears *  (1000 * 60 * 60 * 24) * 366L;
-        long yearN = leapYears + normalYears;
-
-        return (long) this.milli + secondN + minuteN + hourN + dayN + monthN + yearN;
-
-    }
-
 
 
     /**
@@ -129,8 +88,15 @@ public class Date {
      * @param date Date to add
      * @return Date object of added date
      */
+    public Date formattedSum(Date date) {
+        int yearOut = year + date.year;
+        if (year > 0 && year + date.year <= 0) yearOut -= 1;
+        else if (year < 0 && year + date.year >= 0) yearOut += 1;
+        return reformatDate(new Date(yearOut, month + date.month, day + date.day,hour + date.hour, minute + date.minute, second + date.second, milli + date.milli));
+    }
+
     public Date sum(Date date) {
-        return reformatDate(new Date(year + date.year, month + date.month, day + date.day,hour + date.hour, minute + date.minute, second + date.second, milli + date.milli));
+        return new Date(year + date.year, month + date.month, day + date.day, hour + date.hour, minute + date.minute, second + date.second, milli + date.milli);
     }
 
     /**
@@ -138,12 +104,122 @@ public class Date {
      * @param date Date to subtract
      * @return Date object of subtracted date
      */
+    public Date formattedDiff(Date date) {
+        int yearOut = year - date.year;
+        if (year > 0 && year - date.year <= 0) yearOut -= 1;
+        else if (year < 0 && year - date.year >= 0) yearOut += 1;
+        return reformatDate(new Date(yearOut, month - date.month, day - date.day,hour - date.hour, minute - date.minute, second - date.second, milli - date.milli));
+    }
+    
     public Date diff(Date date) {
-        return reformatDate(new Date(year - date.year, month - date.month, day - date.day,hour - date.hour, minute - date.minute, second - date.second, milli - date.milli));
+        return new Date(year - date.year, month - date.month, day - date.day, hour - date.hour, minute - date.minute, second - date.second, milli - date.milli);
+    }
+
+    /**
+     * Gets date object with a Timezone offset
+     * @param offset Timezone offset Ex: if it's UTC-4, write -4
+     * @return Date object in local form.
+     */
+    public Date localDate(double offset) {
+        int hour = (int)(offset);
+        int minute = (int)((offset-hour) * (60));
+
+        return reformatDate(sum(new Date(0, 0, 0, hour, minute, 0, 0)));
+        }
+
+
+    /**
+     * Converts Date object back to string form.
+     * @return String form of Date
+     */
+    public String toString() {
+        return (year + ":" + getValue(month , 2) + ":" + getValue(day, 2) + ":" + getValue(hour, 2) + ":" + getValue(minute, 2) + ":" + getValue(second, 2)+ ":"+ getValue(milli, 3));
+    }
+
+    /**
+     * Makes sure that the String format uses zeros where needed.
+     * @param in Article to update
+     * @param length how many zeroes to add if needed.
+     * @return String of int, with zeroes added if needed
+     */
+    private String getValue(int in, int length) {
+        StringBuilder inS = new StringBuilder(String.valueOf(in));
+        if (inS.length() < length) {
+            int l = length - inS.length();
+            for (int i = 0; i < l; i++) {
+                inS.insert(0, "0");
+            }
+        }
+        return inS.toString();
+    }
+
+    /**
+     * Returns an example String date, to show off how it could work.
+     * @return String example date.
+     */
+    public static String getExample() {
+        return "2021:09:06:12:23:12:236";
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public int getSecond() {
+        return second;
+    }
+
+    public int getMilli() {
+        return milli;
+    }
+
+
+    /**
+     * Checks if a year is a leap year
+     * @param year year to check
+     * @return boolean variable of if it's a leap year
+     */
+    public static boolean isLeapYear(int year) {
+        return (year % 4 == 0);
+    }
+
+    /**
+     * Calculates the number of days in the current month
+     * @param month month to check
+     * @param year year of month to check (for the case of Feb.)
+     * @return integer, number of days in the month
+     */
+    public static int getDaysInMonth(int month, int year) {
+        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
+            return 31;
+        else if (month == 2) {
+            if (isLeapYear(year)) return 29;
+            else return 28;
+        }
+        else if (month == 4 || month == 6 || month == 9 || month == 11)
+            return 30;
+        else if (month < 1) return getDaysInMonth(month + 12, year);
+        else return getDaysInMonth(month - 12, year);
     }
 
     public static Date reformatDate(Date date) {
-        int year = date.year, month = date.month, day = date.day, hour = date.hour, minute = date.minute, second = date.second, milli = date.milli;
+        int year = date.getYear(), month = date.getMonth(), day = date.getDay(), hour = date.getHour(), minute = date.getMinute(), second = date.getSecond(), milli = date.getMilli();
 
         while (milli >= 1000) {
             milli -= 1000;
@@ -183,8 +259,8 @@ public class Date {
         int tempM = month;
         int tempY = year % 4 + 1;
 
-        while (day > Util.getDaysInMonth(tempM, tempY)) {
-            day -= Util.getDaysInMonth(tempM, tempY);
+        while (day > getDaysInMonth(tempM, tempY)) {
+            day -= getDaysInMonth(tempM, tempY);
             tempM++;
             month++;
             if (tempM > 12) {
@@ -193,8 +269,8 @@ public class Date {
             }
             if (tempY > 4) tempY = 1;
         }
-        while (day < 0) {
-            day += Util.getDaysInMonth(tempM, tempY);
+        while (day <= 0) {
+            day += getDaysInMonth(tempM, tempY);
             tempM--;
             month--;
             if (tempM < 1) {
@@ -208,91 +284,15 @@ public class Date {
             month -= 12;
             year++;
         }
-        while (month < 0) {
+        while (month <= 0) {
             month += 12;
             year--;
         }
 
-        return new Date(year, month, day, hour, minute, second, milli);
-
-    }
-
-    /**
-     * Gets date object with a Timezone offset
-     * @param offset Timezone offset Ex: if it's UTC-4, write -4
-     * @return Date object in local form.
-     */
-    public Date localDate(int offset) {
-        int day = this.day, month = this.month, year = this.year;
-        int hour = this.hour +  offset;
-        if (hour < 0 || hour > 23) {
-            while (hour < 0) {
-                day--;
-                hour += 24;
-            }
-            while (hour > 23) {
-                hour -= 24;
-                day++;
-            }
-        }
-        if (day > Util.getDaysInMonth(month, year) || day < 1) {
-            while (day > Util.getDaysInMonth(month, year)) {
-                day -= Util.getDaysInMonth(month, year);
-                month += 1;
-
-            }
-            while (day < 1) {
-                day += Util.getDaysInMonth(month, year);
-                month -= 1;
-            }
-        }
-        if (month > 12 || month < 0) {
-            while (month > 12) {
-                month -= 12;
-                year++;
-            }
-            while (month < 1) {
-                month += 12;
-                year--;
-            }
-        }
-        if (year < 0) year--;
-
+         if (date.year > 0 && year <= 0) year--;
+         else if (date.year < 0 && year >= 0) year++;
 
         return new Date(year, month, day, hour, minute, second, milli);
-    }
 
-
-    /**
-     * Converts Date object back to string form.
-     * @return String form of Date
-     */
-    public String toString() {
-        return (year + ":" + getValue(month , 2) + ":" + getValue(day, 2) + ":" + getValue(hour, 2) + ":" + getValue(minute, 2) + ":" + getValue(second, 2)+ ":"+ getValue(milli, 3));
-    }
-
-    /**
-     * Makes sure that the String format uses zeros where needed.
-     * @param in Article to update
-     * @param length how many zeroes to add if needed.
-     * @return String of int, with zeroes added if needed
-     */
-    private String getValue(int in, int length) {
-        StringBuilder inS = new StringBuilder(String.valueOf(in));
-        if (inS.length() < length) {
-            int l = length - inS.length();
-            for (int i = 0; i < l; i++) {
-                inS.insert(0, "0");
-            }
-        }
-        return inS.toString();
-    }
-
-    /**
-     * Returns an example String date, to show off how it could work.
-     * @return String example date.
-     */
-    public static String getExample() {
-        return "2021:09:06:12:23:12:236";
     }
 }
