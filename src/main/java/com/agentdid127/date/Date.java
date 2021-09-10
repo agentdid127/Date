@@ -76,7 +76,7 @@ public class Date {
 
 
     /**
-     * Adds the two dates
+     * Adds the two dates, then makes it look nice
      * @param date Date to add
      * @return Date object of added date
      */
@@ -87,12 +87,17 @@ public class Date {
         return reformatDate(new Date(yearOut, month + date.month, day + date.day,hour + date.hour, minute + date.minute, second + date.second, milli + date.milli));
     }
 
+    /**
+     * Adds two dates
+     * @param date Date to add
+     * @return added date
+     */
     public Date sum(Date date) {
         return new Date(year + date.year, month + date.month, day + date.day, hour + date.hour, minute + date.minute, second + date.second, milli + date.milli);
     }
 
     /**
-     * Subtracts the dates
+     * Subtracts the dates then formats them
      * @param date Date to subtract
      * @return Date object of subtracted date
      */
@@ -102,7 +107,12 @@ public class Date {
         else if (year < 0 && year - date.year >= 0) yearOut += 1;
         return reformatDate(new Date(yearOut, month - date.month, day - date.day,hour - date.hour, minute - date.minute, second - date.second, milli - date.milli));
     }
-    
+
+    /**
+     * Subtracts Dates
+     * @param date Date to subtract
+     * @return Date object of subtracted Date
+     */
     public Date diff(Date date) {
         return new Date(year - date.year, month - date.month, day - date.day, hour - date.hour, minute - date.minute, second - date.second, milli - date.milli);
     }
@@ -145,30 +155,58 @@ public class Date {
         return inS.toString();
     }
 
+    /**
+     * Gets the current Year
+     * @return Year int
+     */
     public int getYear() {
         return year;
     }
 
+    /**
+     * Gets the current month
+     * @return Month int
+     */
     public int getMonth() {
         return month;
     }
 
+    /**
+     * Gets the current day
+     * @return Day int
+     */
     public int getDay() {
         return day;
     }
 
+    /**
+     * Gets the current hour
+     * @return Hour int
+     */
     public int getHour() {
         return hour;
     }
 
+    /**
+     * Gets the current minute
+     * @return Minute int
+     */
     public int getMinute() {
         return minute;
     }
 
+    /**
+     * Gets the current Second
+     * @return Second int
+     */
     public int getSecond() {
         return second;
     }
 
+    /**
+     * Gets the current millisecond
+     * @return Millisecond int
+     */
     public int getMilli() {
         return milli;
     }
@@ -180,7 +218,10 @@ public class Date {
      * @return boolean variable of if it's a leap year
      */
     public static boolean isLeapYear(int year) {
-        return (year % 4 == 0);
+        if (year % 4 != 0) return false;
+        else if (year % 100 != 0) return true;
+        else if (year % 400 != 0) return false;
+        else return true;
     }
 
     /**
@@ -202,6 +243,11 @@ public class Date {
         else return getDaysInMonth(month - 12, year);
     }
 
+    /**
+     * Updates the date variable to not have invalid numbers
+     * @param date Date to reformat
+     * @return Formatted date
+     */
     public static Date reformatDate(Date date) {
         int year = date.getYear(), month = date.getMonth(), day = date.getDay(), hour = date.getHour(), minute = date.getMinute(), second = date.getSecond(), milli = date.getMilli();
 

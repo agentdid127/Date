@@ -14,15 +14,11 @@ import java.text.SimpleDateFormat;
 public class TestClass {
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         new TestClass().run(args);
     }
-    /**
-     * Tests some info for the Date class
-     * @param args arguments, one Date string for each.
-     */
 
-    public void run(String[] args) throws InterruptedException {
+    public void run(String[] args) {
             Date date = new Date(args[0]);
 
 

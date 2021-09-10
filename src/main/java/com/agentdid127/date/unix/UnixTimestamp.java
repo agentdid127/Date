@@ -117,18 +117,34 @@ public class UnixTimestamp {
 
     }
 
+    /**
+     * Gets the Unix Timestamp
+     * @return Unix Timestamp
+     */
     public long getData() {
         return data;
     }
 
+    /**
+     * Gets the Unix Format
+     * @return Either Milliseconds or Seconds
+     */
     public UnixFormat getFormat() {
         return format;
     }
 
+    /**
+     * Gets the data value
+     * @return Data value
+     */
     public String toString() {
         return String.valueOf(data);
     }
 
+    /**
+     * Converts Unix Timestamp into Java Date
+     * @return
+     */
     public java.util.Date toJavaDate() {
         long datan = data;
         java.util.Date date = new java.util.Date();
@@ -139,11 +155,20 @@ public class UnixTimestamp {
         return date;
     }
 
+    /**
+     * Gets the timestamp at this current date
+     * @return UnixTimestamp of the current date and time
+     */
     public static UnixTimestamp current() {
         long milli = System.currentTimeMillis();
         return new UnixTimestamp(milli, UnixFormat.MILLISECONDS);
     }
 
+    /**
+     * Gets a UnixTimestamp from the date
+     * @param date Date to get timestamp from
+     * @return Timestamp
+     */
     public static UnixTimestamp fromDate(Date date) {
         //Get some useful information
         int yearTemp = date.getYear();
