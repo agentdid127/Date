@@ -19,7 +19,7 @@ public class UpdatableDate {
 
     /**
      * Gets the updated date
-     * @return
+     * @return Updated date
      */
     public Date getDate() {
         Date diff = UnixTimestamp.current().toDate().diff(createDate);

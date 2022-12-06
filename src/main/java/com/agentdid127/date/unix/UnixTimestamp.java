@@ -22,7 +22,7 @@ public class UnixTimestamp {
 
     /**
      * Gets Date from Unix timestamp
-     * @return
+     * @return UnixSupported Date
      */
     public UnixSupportedDate toDate() {
         long milli;
@@ -117,7 +117,7 @@ public class UnixTimestamp {
 
     /**
      * Converts Unix Timestamp into Java Date
-     * @return
+     * @return Java date
      */
     public java.util.Date toJavaDate() {
         long datan = data;

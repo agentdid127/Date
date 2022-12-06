@@ -13,10 +13,18 @@ import java.text.SimpleDateFormat;
 public class TestClass {
 
 
+    /**
+     * Main test function
+     * @param args Main arguments
+     */
     public static void main(String[] args) {
         new TestClass().run(args);
     }
 
+    /**
+     * Runs the tests
+     * @param args Main arguments
+     */
     public void run(String[] args) {
             Date date = new Date(args[0]);
 
@@ -55,7 +63,7 @@ public class TestClass {
             System.out.println("Unix Date: " + uDate.getDate());
 
             System.out.println("Global formatted date: " + DateFormat.globalPrintingDate(date) + " " + DateFormat.globalPrintingTime(date));
-        System.out.println("US formatted date: " + DateFormat.americanPrintingDate(date) + " " + DateFormat.americanPrintingTime(date));
+            System.out.println("US formatted date: " + DateFormat.americanPrintingDate(date) + " " + DateFormat.americanPrintingTime(date));
 
 
         }

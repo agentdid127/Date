@@ -53,10 +53,20 @@ public class UnixSupportedDate extends Date {
         return UnixTimestamp.fromDate(this);
     }
 
+    /**
+     * Gets a UnixSupportedDate from a regular Date
+     * @param date Date
+     * @return Unix date
+     */
     public static UnixSupportedDate fromDate(Date date) {
         return new UnixSupportedDate(date);
     }
 
+    /**
+     * Gets a Regular date from a Unix Supported Date
+     * @param date UnixDate
+     * @return Date
+     */
     public static Date toDate(UnixSupportedDate date) {
         return date;
     }

@@ -5,7 +5,9 @@ package com.agentdid127.date;
  */
 public class Date {
 
-    //Instance Variables
+    /**
+     * Date Variables
+     */
     protected int year, month, day, hour, minute, second, milli;
 
 
