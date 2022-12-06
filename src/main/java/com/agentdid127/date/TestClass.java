@@ -5,7 +5,6 @@ import com.agentdid127.date.unix.UnixSupportedDate;
 import com.agentdid127.date.unix.UnixTimestamp;
 import com.agentdid127.date.unix.UpdatableDate;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -45,7 +44,7 @@ public class TestClass {
 
             System.out.println("Testing Java Date:");
             java.util.Date jDate = date2.getUnixMilli().toJavaDate();
-            DateFormat formatter = new SimpleDateFormat("EEEEEE yy/MM/dd hh:mm");
+            java.text.SimpleDateFormat formatter = new SimpleDateFormat("EEEEEE yy/MM/dd hh:mm");
 
             String formattedDate = formatter.format(jDate);
 
@@ -54,6 +53,9 @@ public class TestClass {
             System.out.println("Current Time: " + UnixTimestamp.current().toDate());
 
             System.out.println("Unix Date: " + uDate.getDate());
+
+            System.out.println("Global formatted date: " + DateFormat.globalPrintingDate(date) + " " + DateFormat.globalPrintingTime(date));
+        System.out.println("US formatted date: " + DateFormat.americanPrintingDate(date) + " " + DateFormat.americanPrintingTime(date));
 
 
         }

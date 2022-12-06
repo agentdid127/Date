@@ -251,40 +251,21 @@ public class Date {
     public static Date reformatDate(Date date) {
         int year = date.getYear(), month = date.getMonth(), day = date.getDay(), hour = date.getHour(), minute = date.getMinute(), second = date.getSecond(), milli = date.getMilli();
 
-        while (milli >= 1000) {
-            milli -= 1000;
-            second++;
-        }
-        while (milli < 0) {
-            milli += 1000;
-            second--;
-        }
-        while (second >= 60) {
-            second -= 60;
-            minute++;
-        }
-        while (second < 0) {
-            second += 60;
-            minute--;
-        }
+        double milli_correct = milli / 1000.0;
+        milli = milli % 1000;
+        second += Math.floor(milli_correct);
 
-        while (minute >= 60) {
-            minute -= 60;
-            hour++;
-        }
-        while (minute < 0) {
-            minute += 60;
-            hour--;
-        }
+        double second_correct = second / 60.0;
+        second = second % 60;
+        minute += Math.floor(second_correct);
 
-        while (hour >= 24) {
-            hour -= 24;
-            day++;
-        }
-        while (hour < 0) {
-            hour += 24;
-            day--;
-        }
+        double minute_correct = minute / 60.0;
+        minute = minute % 60;
+        hour += Math.floor(minute_correct);
+
+        double hour_correct = hour / 24.0;
+        hour = hour % 24;
+        day += Math.floor(hour_correct);
 
         int tempM = month;
         int tempY = year % 4 + 1;
@@ -310,14 +291,9 @@ public class Date {
             if (tempY < 1) tempY = 4;
         }
 
-        while (month > 12) {
-            month -= 12;
-            year++;
-        }
-        while (month <= 0) {
-            month += 12;
-            year--;
-        }
+        double month_correct = (month - 1) / 12.0;
+        month = (month - 1) % 12 + 1;
+        year += Math.floor(month_correct);
 
          if (date.year > 0 && year <= 0) year--;
          else if (date.year < 0 && year >= 0) year++;

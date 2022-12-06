@@ -32,49 +32,27 @@ public class UnixTimestamp {
             milli = data;
         } else return null;
         long second = 0;
-        if (milli >= 1000 || milli < 0) {
-            while (milli >= 1000) {
-                milli -= 1000;
-                second++;
-            }
-            while (milli < 0) {
-                milli += 1000;
-                second--;
-            }
-        }
+        double milli_correct = milli / 1000.0;
+        milli = milli % 1000;
+        second += Math.floor(milli_correct);
+
         long minute = 0;
-        if (second >= 60 || second < 0) {
-            while (second >= 60) {
-                second -= 60;
-                minute++;
-            }
-            while (second < 0) {
-                second += 60;
-                minute--;
-            }
-        }
+        double second_correct = second / 60.0;
+        second = second % 60;
+        minute += Math.floor(second_correct);
+
         long hour = 0;
-        if (minute >= 60 || minute < 0) {
-            while (minute >= 60) {
-                minute -= 60;
-                hour++;
-            }
-            while (minute < 0) {
-                minute +=60;
-                hour--;
-            }
-        }
+
+        double minute_correct = minute / 60.0;
+        minute = minute % 60;
+        hour += Math.floor(minute_correct);
+
         long day = 0;
-        if (hour >= 24 || hour < 0) {
-            while (hour > 24) {
-                hour -= 24;
-                day++;
-            }
-            while (hour < 0) {
-                hour += 24;
-                day--;
-            }
-        }
+
+        double hour_correct = hour / 24.0;
+        hour = hour % 24;
+        day += Math.floor(hour_correct);
+
         long month = 0;
         int yCycle = 1;
         int mCycle = 1;
@@ -100,14 +78,10 @@ public class UnixTimestamp {
             }
             month++;
             int year = 1970;
-            while (month > 12) {
-                month -= 12;
-                year++;
-            }
-            while (month < 0) {
-                month += 12;
-                year--;
-            }
+            double month_correct = (month - 1) / 12.0;
+            month = (month - 1) % 12 + 1;
+            year += Math.floor(month_correct);
+
 
             if (year % 4 > 0 && year > 1970) day++;
             if (year % 4 != 1 && year < 1970) day++;

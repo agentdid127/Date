@@ -52,4 +52,12 @@ public class UnixSupportedDate extends Date {
     public UnixTimestamp getUnixMilli() {
         return UnixTimestamp.fromDate(this);
     }
+
+    public static UnixSupportedDate fromDate(Date date) {
+        return new UnixSupportedDate(date);
+    }
+
+    public static Date toDate(UnixSupportedDate date) {
+        return date;
+    }
 }
