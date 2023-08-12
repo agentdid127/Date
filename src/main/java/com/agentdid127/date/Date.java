@@ -8,7 +8,7 @@ public class Date {
     /**
      * Date Variables
      */
-    protected int year, month, day, hour, minute, second, milli;
+    protected short year, month, day, hour, minute, second, milli;
 
 
     /**
@@ -30,13 +30,13 @@ public class Date {
      */
     public Date(String dateIn) {
         String[] date = dateIn.split(":");
-        year = Integer.parseInt(date[0]);
-        month = Integer.parseInt(date[1]);
-        day = Integer.parseInt(date[2]);
-        hour = Integer.parseInt(date[3]);
-        minute = Integer.parseInt(date[4]);
-        second = Integer.parseInt(date[5]);
-        milli = Integer.parseInt(date[6]);
+        year = Short.parseShort(date[0]);
+        month = Short.parseShort(date[1]);
+        day = Short.parseShort(date[2]);
+        hour = Short.parseShort(date[3]);
+        minute = Short.parseShort(date[4]);
+        second = Short.parseShort(date[5]);
+        milli = Short.parseShort(date[6]);
     }
 
     /**
@@ -50,6 +50,20 @@ public class Date {
      * @param milli millisecond
      */
     public Date(int year, int month, int day, int hour, int minute, int second, int milli) {
+        this((short) year, (short) month, (short) day, (short) hour, (short) minute, (short) second, (short) milli);
+    }
+
+    /**
+     * Date, but with all arguments as a short
+     * @param year year
+     * @param month month
+     * @param day day
+     * @param hour hour
+     * @param minute minute
+     * @param second second
+     * @param milli millisecond
+     */
+    public Date(short year, short month, short day, short hour, short minute, short second, short milli) {
         this.year = year;
         this.month = month;
         this.day = day;

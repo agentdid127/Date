@@ -30,6 +30,20 @@ public class UnixSupportedDate extends Date {
     }
 
     /**
+     * Create new UnixSupported Date
+     * @param year Year
+     * @param month Month
+     * @param day Day
+     * @param hour Hour
+     * @param minute Minute
+     * @param second Second
+     * @param milli Millisecond
+     */
+    public UnixSupportedDate(short year, short month, short day, short hour, short minute, short second, short milli) {
+        super(year, month, day, hour, minute, second, milli);
+    }
+
+    /**
      * Create new Unix Supported Date
      * @param dateIn Date String to create from
      */
