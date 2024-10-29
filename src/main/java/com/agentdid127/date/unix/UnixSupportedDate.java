@@ -40,7 +40,7 @@ public class UnixSupportedDate extends Date {
      * @param milli Millisecond
      */
     public UnixSupportedDate(short year, short month, short day, short hour, short minute, short second, short milli) {
-        super(year, month, day, hour, minute, second, milli);
+        super(year, month, day, hour, minute, second, milli, 0);
     }
 
     /**

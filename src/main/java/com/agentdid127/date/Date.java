@@ -1,5 +1,7 @@
 package com.agentdid127.date;
 
+import com.agentdid127.date.util.DateUtil;
+
 /**
  * Custom date System, to avoid 2038 issues
  */
@@ -8,7 +10,9 @@ public class Date {
     /**
      * Date Variables
      */
-    protected short year, month, day, hour, minute, second, milli;
+    protected int year, month, day, hour, minute, second, millisecond;
+
+    private final double offset;
 
 
     /**
@@ -21,22 +25,46 @@ public class Date {
         hour = 0;
         minute = 0;
         second = 0;
-        milli = 0;
+        millisecond = 0;
+        offset = 0;
     }
 
     /**
      * Date started as a string Date object
      * @param dateIn Date object
      */
-    public Date(String dateIn) {
-        String[] date = dateIn.split(":");
-        year = Short.parseShort(date[0]);
-        month = Short.parseShort(date[1]);
-        day = Short.parseShort(date[2]);
-        hour = Short.parseShort(date[3]);
-        minute = Short.parseShort(date[4]);
-        second = Short.parseShort(date[5]);
-        milli = Short.parseShort(date[6]);
+    public Date(String dateIn, double offset) {
+        java.util.Date date = DateUtil.fromString(dateIn);
+        year = DateUtil.year(date);
+        month = DateUtil.month(date);
+        day = DateUtil.day(date);
+        hour = DateUtil.hour(date);
+        minute = DateUtil.minute(date);
+        second = DateUtil.second(date);
+        millisecond = DateUtil.millisecond(date);
+        this.offset = offset;
+    }
+
+    /**
+     * Date, but with all arguments as an integer
+     * @param year year
+     * @param month month
+     * @param day day
+     * @param hour hour
+     * @param minute minute
+     * @param second second
+     * @param milli millisecond
+     * @param offset offset
+     */
+    public Date(int year, int month, int day, int hour, int minute, int second, int milli, double offset) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.millisecond = milli;
+        this.offset = offset;
     }
 
     /**
@@ -50,7 +78,7 @@ public class Date {
      * @param milli millisecond
      */
     public Date(int year, int month, int day, int hour, int minute, int second, int milli) {
-        this((short) year, (short) month, (short) day, (short) hour, (short) minute, (short) second, (short) milli);
+        this(year, month, day, hour, minute, second, milli, 0);
     }
 
     /**
@@ -62,15 +90,15 @@ public class Date {
      * @param minute minute
      * @param second second
      * @param milli millisecond
+     * @deprecated Use the int constructor instead.
      */
+    @Deprecated
     public Date(short year, short month, short day, short hour, short minute, short second, short milli) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
-        this.milli = milli;
+        this(year,month,day,hour,minute,second,(int)milli, 0);
+    }
+
+    public Date(String date) {
+        this(date, 0);;
     }
 
     /**
@@ -97,10 +125,7 @@ public class Date {
      * @return Date object of added date
      */
     public Date formattedSum(Date date) {
-        int yearOut = year + date.year;
-        if (year > 0 && year + date.year <= 0) yearOut -= 1;
-        else if (year < 0 && year + date.year >= 0) yearOut += 1;
-        return reformatDate(new Date(yearOut, month + date.month, day + date.day,hour + date.hour, minute + date.minute, second + date.second, milli + date.milli));
+        return new Date(DateUtil.getString(new java.util.Date(DateUtil.fromString(this.toString(), this.offset).getTime() + DateUtil.fromString(date.toString()).getTime())));
     }
 
     /**
@@ -109,7 +134,7 @@ public class Date {
      * @return added date
      */
     public Date sum(Date date) {
-        return new Date(year + date.year, month + date.month, day + date.day, hour + date.hour, minute + date.minute, second + date.second, milli + date.milli);
+        return new Date(year + date.year, month + date.month, day + date.day, hour + date.hour, minute + date.minute, second + date.second, millisecond + date.millisecond);
     }
 
     /**
@@ -118,10 +143,7 @@ public class Date {
      * @return Date object of subtracted date
      */
     public Date formattedDiff(Date date) {
-        int yearOut = year - date.year;
-        if (year > 0 && year - date.year <= 0) yearOut -= 1;
-        else if (year < 0 && year - date.year >= 0) yearOut += 1;
-        return reformatDate(new Date(yearOut, month - date.month, day - date.day,hour - date.hour, minute - date.minute, second - date.second, milli - date.milli));
+        return new Date(DateUtil.getString(new java.util.Date(DateUtil.fromString(this.toString(), this.offset).getTime() - DateUtil.fromString(date.toString()).getTime())));
     }
 
     /**
@@ -130,7 +152,7 @@ public class Date {
      * @return Date object of subtracted Date
      */
     public Date diff(Date date) {
-        return new Date(year - date.year, month - date.month, day - date.day, hour - date.hour, minute - date.minute, second - date.second, milli - date.milli);
+        return new Date(year - date.year, month - date.month, day - date.day, hour - date.hour, minute - date.minute, second - date.second, millisecond - date.millisecond);
     }
 
     /**
@@ -139,11 +161,8 @@ public class Date {
      * @return Date object in local form.
      */
     public Date localDate(double offset) {
-        int hour = (int)(offset);
-        int minute = (int)((offset-hour) * (60));
-
-        return formattedSum(new Date(0, 0, 0, hour, minute, 0, 0));
-        }
+        return new Date(DateUtil.getLocalString(DateUtil.fromString(this.toString(), this.offset), offset));
+    }
 
 
     /**
@@ -151,7 +170,7 @@ public class Date {
      * @return String form of Date
      */
     public String toString() {
-        return (year + ":" + getValue(month , 2) + ":" + getValue(day, 2) + ":" + getValue(hour, 2) + ":" + getValue(minute, 2) + ":" + getValue(second, 2)+ ":"+ getValue(milli, 3));
+        return (year + ":" + getValue(month , 2) + ":" + getValue(day, 2) + ":" + getValue(hour, 2) + ":" + getValue(minute, 2) + ":" + getValue(second, 2)+ ":"+ getValue(millisecond, 3));
     }
 
     /**
@@ -224,7 +243,7 @@ public class Date {
      * @return Millisecond int
      */
     public int getMilli() {
-        return milli;
+        return millisecond;
     }
 
 
@@ -236,8 +255,7 @@ public class Date {
     public static boolean isLeapYear(int year) {
         if (year % 4 != 0) return false;
         else if (year % 100 != 0) return true;
-        else if (year % 400 != 0) return false;
-        else return true;
+        else return year % 400 == 0;
     }
 
     /**
@@ -265,56 +283,46 @@ public class Date {
      * @return Formatted date
      */
     public static Date reformatDate(Date date) {
-        int year = date.getYear(), month = date.getMonth(), day = date.getDay(), hour = date.getHour(), minute = date.getMinute(), second = date.getSecond(), milli = date.getMilli();
 
-        double milli_correct = milli / 1000.0;
-        milli = milli % 1000;
-        second += Math.floor(milli_correct);
-
-        double second_correct = second / 60.0;
-        second = second % 60;
-        minute += Math.floor(second_correct);
-
-        double minute_correct = minute / 60.0;
-        minute = minute % 60;
-        hour += Math.floor(minute_correct);
-
-        double hour_correct = hour / 24.0;
-        hour = hour % 24;
-        day += Math.floor(hour_correct);
-
-        int tempM = month;
-        int tempY = year % 4 + 1;
-
-        while (day > getDaysInMonth(tempM, tempY)) {
-            day -= getDaysInMonth(tempM, tempY);
-            tempM++;
-            month++;
-            if (tempM > 12) {
-                tempY++;
-                tempM = 1;
-            }
-            if (tempY > 4) tempY = 1;
+        if (date.year < 1970) {
+            throw new IllegalArgumentException("Date must be newer than the UNIX epoch.");
         }
-        while (day <= 0) {
-            day += getDaysInMonth(tempM, tempY);
-            tempM--;
-            month--;
-            if (tempM < 1) {
-                tempM = 12;
-                tempY--;
-            }
-            if (tempY < 1) tempY = 4;
+        long milli = date.millisecond;
+        milli += date.getSecond() * DateUtil.milliToSecond();
+        milli += date.getMinute() * DateUtil.milliToMinute();
+        milli += date.getHour() * DateUtil.milliToHour();
+
+        while (date.month <= 0) {
+            date.month += 12;
+            date.year--;
         }
 
-        double month_correct = (month - 1) / 12.0;
-        month = (month - 1) % 12 + 1;
-        year += Math.floor(month_correct);
+        while (date.month > 12) {
+            date.year--;
+            date.month -= 12;
+        }
 
-         if (date.year > 0 && year <= 0) year--;
-         else if (date.year < 0 && year >= 0) year++;
+        if (date.day > getDaysInMonth(date.month, date.year)) {
+            while (date.day > getDaysInMonth(date.month, date.year)) {
+                date.day -= getDaysInMonth(date.month, date.year);
+                date.month++;
+            }
+        }
 
-        return new Date(year, month, day, hour, minute, second, milli);
+        long days = date.day;
 
+        for (int i = 0; i < date.month; i++) {
+            days += getDaysInMonth(i+1, date.year);
+        }
+
+
+        for (int i = 0; i < date.year - 1970; i++) {
+            days += 365;
+            if (isLeapYear(i + 1970)) days += 1;
+        }
+        days--;
+        milli += days * DateUtil.milliToDay();
+
+        return new Date(DateUtil.getString(new java.util.Date(milli)));
     }
 }

@@ -26,11 +26,12 @@ public class TestClass {
      * @param args Main arguments
      */
     public void run(String[] args) {
-            Date date = new Date(args[0]);
+            Date date = UnixTimestamp.current().toDate();
 
 
-
+            System.out.println("Initial date: " + date);
             date = Date.reformatDate(date);
+            System.out.println("Reformatted date: " + date);
 
             UnixSupportedDate date2 = new UnixSupportedDate(date);
             Date finalDate = date;

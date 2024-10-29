@@ -1,20 +1,21 @@
 package com.agentdid127.date.unix;
 
 import com.agentdid127.date.Date;
+import com.agentdid127.date.util.DateUtil;
 
 /**
  * Updateable Date Subclass
  */
 public class UpdatableDate {
-    private Date date, createDate;
+    private java.util.Date date, createDate;
 
     /**
      * UpdatableDate
      * @param date Date to start updating
      */
     public UpdatableDate(Date date) {
-        createDate = UnixTimestamp.current().toDate();
-        this.date = date;
+        createDate = DateUtil.now();
+        this.date = DateUtil.fromString(date.toString());
     }
 
     /**
@@ -22,7 +23,7 @@ public class UpdatableDate {
      * @return Updated date
      */
     public Date getDate() {
-        Date diff = UnixTimestamp.current().toDate().diff(createDate);
-        return date.formattedSum(diff);
+        long diff = DateUtil.now().getTime() - createDate.getTime();
+        return new Date(DateUtil.getString(new java.util.Date(date.getTime() + diff)));
     }
 }
